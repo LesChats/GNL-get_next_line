@@ -6,22 +6,22 @@
 /*   By: gcc <marvin@42.fr>                         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/21 11:32:17 by gcc               #+#    #+#             */
-/*   Updated: 2020/11/25 09:09:56 by gcc              ###   ########.fr       */
+/*   Updated: 2020/11/25 12:56:22 by gcc              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static long int	get_newline(char *s)
+static long int	get_nl(char *s)
 {
 	t_op		word;
 	t_op		*sss;
-	char * const	s_ptr = s;
+	char * const	save = s;
 	int		i;
 
 	while ((t_op)s & 0b111)
 		if (*s++ == '\n')
-			return ((s - 1) - s_ptr);
+			return ((s - 1) - save);
 		else if (*(s - 1) == '\0')
 			return (-1);
 	sss = (t_op *)s;
@@ -35,19 +35,19 @@ static long int	get_newline(char *s)
 			i = -1;
 			while (++i < 8)
 				if (s[i] == '\n')
-					return ((s + i) - s_ptr);
+					return ((s + i) - save);
 				else if (!s[i])
 					return (-1);
 		}
 	}
 }
 
-static char	*ft_nappend(char *dst, char *src, size_t src_len)
+static char	*ft_nappend(char *dst, const char *src, size_t src_len)
 {
-	char	*tmp;
-	const size_t dst_len = ft_strlen(dst);
+	char		*tmp;
+	const size_t	dst_len = ft_strlen(dst);
 
-	if (!(tmp = (char *)malloc(dst_len + 1)))
+	if (!(tmp = (char *)malloc(dst_len)))
 		return (NULL);
 	ft_memcpy(tmp, dst, dst_len);
 	free(dst);
@@ -65,25 +65,25 @@ static char	*ft_nappend(char *dst, char *src, size_t src_len)
 
 static int	read_line(int fd, char **line, char *sheet)
 {
-	int		readed;
+	ssize_t		av_read;
 	long int	a_nl;
 
-	while ((readed = read(fd, sheet, BUFFER_SIZE)) > 0)
+	while ((av_read = read(fd, sheet, BUFFER_SIZE)) > 0)
 	{
-		sheet[readed] = 0;
-		if ((a_nl = get_newline(sheet)) != -1)
+		sheet[av_read] = 0;
+		if ((a_nl = get_nl(sheet)) != -1)
 		{
 			sheet[a_nl] = 0;
 			if (!(*line = ft_nappend(*line, sheet, a_nl)))
 				return (ERROR);
-			ft_memcpy(sheet, sheet + a_nl + 1, readed - a_nl);
+			ft_memcpy(sheet, sheet + a_nl + 1, av_read - a_nl);
 			return (SUCESS);
 		}
-		if (!(*line = ft_nappend(*line, sheet, readed + 1)))
+		if (!(*line = ft_nappend(*line, sheet, av_read + 1)))
 			return (ERROR);
 	}
-	sheet[0] = 0;
-	if (readed == -1)
+	*sheet = 0;
+	if (av_read == -1)
 	{
 		free(*line);
 		return (ERROR);
@@ -103,7 +103,7 @@ int	get_next_line(int fd, char **line)
 	**line = 0;
 	if (sheets[fd][0] == 0)
 		return (read_line(fd, line, sheets[fd]));
-	if ((a_nl = get_newline(sheets[fd])) != -1)
+	if ((a_nl = get_nl(sheets[fd])) != -1)
 	{
 		free(*line);
 		if (!(*line = (char *)(malloc(a_nl + 1))))

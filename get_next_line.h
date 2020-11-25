@@ -6,7 +6,7 @@
 /*   By: gcc <marvin@42.fr>                         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/22 08:41:44 by gcc               #+#    #+#             */
-/*   Updated: 2020/11/25 07:33:05 by gcc              ###   ########.fr       */
+/*   Updated: 2020/11/25 12:42:45 by gcc              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,9 +51,9 @@ int				get_next_line(int fd, char **line);
 **	get_next_line_utils.c
 */
 
-size_t	ft_strlen(char *s);
-void	ft_strcpy(char *dst, char *src);
-void	ft_memcpy(char *dst, char *src, size_t n);
+size_t	ft_strlen(const char *s);
+void	ft_strcpy(char *dst, const char *src);
+void	ft_memcpy(char *dst, const char *src, size_t n);
 
 #endif
 
