@@ -6,7 +6,7 @@
 /*   By: gcc <marvin@42.fr>                         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/22 08:41:44 by gcc               #+#    #+#             */
-/*   Updated: 2020/11/25 12:42:45 by gcc              ###   ########.fr       */
+/*   Updated: 2020/12/07 03:03:04 by gcc              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,19 @@
 # define ENDFI		0
 # define SUCESS		1
 
+/*
+**	type & structurs
+*/
+
+typedef struct			s_string
+{
+	char	**line;
+	char	*s;
+	size_t	len;
+	size_t	space;
+	size_t	up;
+}				t_string;
+
 typedef unsigned long int	t_op;
 typedef unsigned char		t_byte;
 # define OPSIZ	sizeof(t_op)
@@ -52,6 +65,7 @@ int				get_next_line(int fd, char **line);
 */
 
 size_t	ft_strlen(const char *s);
+int	free_return(t_string *str, int ans);
 void	ft_strcpy(char *dst, const char *src);
 void	ft_memcpy(char *dst, const char *src, size_t n);
 

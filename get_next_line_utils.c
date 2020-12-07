@@ -6,7 +6,7 @@
 /*   By: gcc <marvin@42.fr>                         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/22 09:07:18 by gcc               #+#    #+#             */
-/*   Updated: 2020/11/25 12:42:20 by gcc              ###   ########.fr       */
+/*   Updated: 2020/12/07 02:00:22 by gcc              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,12 +50,39 @@
 
 size_t	ft_strlen(const char *s)
 {
-	size_t i;
+	size_t		len;
+	t_op		x;
 
-	i = 0;
-	while (s[i])
-		++i;
-	return (i);
+	len  = 0;
+	while (4)
+	{
+		x = *(t_op *)s;
+		if (!(x & 0xFF))
+			return (len);
+		if (!(x & 0xFF00))
+			return (len + 1);
+		if (!(x & 0xFF0000))
+			return (len + 2);
+		if (!(x & 0xFF000000))
+			return (len + 3);
+		if (!(x & 0xFF00000000))
+			return (len + 4);
+		if (!(x & 0xFF0000000000))
+			return (len + 5);
+		if (!(x & 0xFF000000000000))
+			return (len + 6);
+		if (!(x & 0xFF00000000000000))
+			return (len + 7);
+		len += 8;
+		s += 8;
+	}
+	return (len);
+}
+
+int	free_return(t_string *str, int ans)
+{
+	free(str);
+	return (ans);
 }
 
 void	ft_strcpy(char *dst, const char *src)

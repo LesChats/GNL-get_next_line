@@ -6,7 +6,7 @@
 /*   By: gcc <marvin@42.fr>                         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/21 11:32:17 by gcc               #+#    #+#             */
-/*   Updated: 2020/11/25 12:56:22 by gcc              ###   ########.fr       */
+/*   Updated: 2020/12/07 03:05:08 by gcc              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,81 +42,100 @@ static long int	get_nl(char *s)
 	}
 }
 
-static char	*ft_nappend(char *dst, const char *src, size_t src_len)
+static int	update_string(t_string *str, char *src, size_t n)
 {
-	char		*tmp;
-	const size_t	dst_len = ft_strlen(dst);
+	char *tmp;
 
-	if (!(tmp = (char *)malloc(dst_len)))
-		return (NULL);
-	ft_memcpy(tmp, dst, dst_len);
-	free(dst);
-	if (!(dst = (char *)malloc(dst_len + src_len + 1)))
+	if (n > str->space)
 	{
+		if (!(tmp = (char *)malloc(str->len)))
+			return (0);
+		ft_memcpy(tmp, str->s, str->len);
+		free(str->s);
+		str->space = BUFFER_SIZE << str->up++;
+		if (!(str->s = (char *)malloc(str->space + 1))) 
+		{
+			free(tmp);
+			return (0);
+		}
+		ft_memcpy(str->s, tmp, str->len);
+		str->space -= str->len;
+		*(str->line) = str->s;
 		free(tmp);
-		return (NULL);
 	}
-	ft_memcpy(dst, tmp, dst_len);
-	free(tmp);
-	ft_memcpy(dst + dst_len, src, src_len);
-	dst[dst_len + src_len] = 0;
-	return (dst);
+	ft_memcpy(str->s + str->len, src, n);
+	str->len += n;
+	str->space -= n;
+	str->s[str->len] = 0;
+	return (1);
 }
 
-static int	read_line(int fd, char **line, char *sheet)
+static int	read_line(int fd, t_string *str, char *sheet)
 {
 	ssize_t		av_read;
 	long int	a_nl;
-
+	
 	while ((av_read = read(fd, sheet, BUFFER_SIZE)) > 0)
 	{
 		sheet[av_read] = 0;
 		if ((a_nl = get_nl(sheet)) != -1)
 		{
 			sheet[a_nl] = 0;
-			if (!(*line = ft_nappend(*line, sheet, a_nl)))
-				return (ERROR);
+			if (!(update_string(str, sheet, a_nl)))
+				return (free_return(str, ERROR));
 			ft_memcpy(sheet, sheet + a_nl + 1, av_read - a_nl);
-			return (SUCESS);
+			return (free_return(str, SUCESS));
 		}
-		if (!(*line = ft_nappend(*line, sheet, av_read + 1)))
-			return (ERROR);
+		if (!(update_string(str, sheet, av_read))) 
+			return (free_return(str, ERROR));
 	}
 	*sheet = 0;
 	if (av_read == -1)
 	{
-		free(*line);
-		return (ERROR);
+		free(str->s);
+		return (free_return(str, ERROR));
 	}
-	return (ENDFI);
+	return (free_return(str, ENDFI));
 }
 
-int	get_next_line(int fd, char **line)
+static t_string	*initilize_string(char **line)
+{
+	t_string *string;
+
+	if (!(string = (t_string *)malloc(sizeof(t_string))))
+		return (NULL);
+	if (!(*line = (char *)malloc(BUFFER_SIZE + 1)))
+		return (NULL);
+	**line = 0;
+	string->line = line;
+	string->s = *line;
+	string->len = 0;
+	string->space = BUFFER_SIZE;
+	string->up = 1;
+	return (string);
+}
+
+int		get_next_line(int fd, char **line)
 {
 	static char	sheets[FOPEN_MAX][BUFFER_SIZE + 1];
 	long int	a_nl;
+	t_string	*my_line;
 
 	if (fd < 0 || fd > FOPEN_MAX || !line || BUFFER_SIZE < 1)
 		return (ERROR);
-	if (!(*line = (char *)malloc(1)))
+	if (!(my_line = initilize_string(line)))
 		return (ERROR);
-	**line = 0;
 	if (sheets[fd][0] == 0)
-		return (read_line(fd, line, sheets[fd]));
+		return (read_line(fd, my_line, sheets[fd]));
 	if ((a_nl = get_nl(sheets[fd])) != -1)
 	{
-		free(*line);
-		if (!(*line = (char *)(malloc(a_nl + 1))))
-			return (ERROR);
-		ft_memcpy(*line, sheets[fd], a_nl);
-		(*line)[a_nl] = 0;
+		if (!(update_string(my_line, sheets[fd], a_nl)))
+			return (free_return(my_line, ERROR));
  		ft_strcpy(sheets[fd], sheets[fd] + a_nl + 1);
-		return (SUCESS);
+		return (free_return(my_line, SUCESS));
 	}
-	free(*line);
-	if (!(*line = (char *)malloc(ft_strlen(sheets[fd]) + 1)))
-		return (ERROR);
-	ft_strcpy(*line, sheets[fd]);
+	if (!(update_string(my_line, sheets[fd], ft_strlen(sheets[fd]))))
+		return (free_return(my_line, ERROR));
 	sheets[fd][0] = 0;
-	return (read_line(fd, line, sheets[fd]));
+	return (read_line(fd, my_line, sheets[fd]));
 }
