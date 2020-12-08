@@ -6,7 +6,7 @@
 /*   By: gcc <marvin@42.fr>                         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/21 11:32:17 by gcc               #+#    #+#             */
-/*   Updated: 2020/12/07 03:05:08 by gcc              ###   ########.fr       */
+/*   Updated: 2020/12/08 04:56:20 by gcc              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,24 +48,18 @@ static int	update_string(t_string *str, char *src, size_t n)
 
 	if (n > str->space)
 	{
-		if (!(tmp = (char *)malloc(str->len)))
-			return (0);
-		ft_memcpy(tmp, str->s, str->len);
-		free(str->s);
 		str->space = BUFFER_SIZE << str->up++;
+		tmp = str->s;
 		if (!(str->s = (char *)malloc(str->space + 1))) 
-		{
-			free(tmp);
 			return (0);
-		}
 		ft_memcpy(str->s, tmp, str->len);
-		str->space -= str->len;
-		*(str->line) = str->s;
 		free(tmp);
+		*(str->line) = str->s;
+		str->space -= str->len;
 	}
+	str->space -= n;
 	ft_memcpy(str->s + str->len, src, n);
 	str->len += n;
-	str->space -= n;
 	str->s[str->len] = 0;
 	return (1);
 }
