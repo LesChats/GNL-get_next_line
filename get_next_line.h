@@ -47,7 +47,7 @@ typedef struct			s_string
 	char	*s;
 	size_t	len;
 	size_t	space;
-	size_t	up;
+	//size_t	up;
 }				t_string;
 
 typedef unsigned long int	t_op;
