@@ -48,7 +48,8 @@ static int	update_string(t_string *str, char *src, size_t n)
 
 	if (n > str->space)
 	{
-		str->space = BUFFER_SIZE << str->up++;
+		//str->space = BUFFER_SIZE << str->up++;
+		str->space <<= 1;
 		tmp = str->s;
 		if (!(str->s = (char *)malloc(str->space + 1))) 
 			return (0);
@@ -105,7 +106,7 @@ static t_string	*initilize_string(char **line)
 	string->s = *line;
 	string->len = 0;
 	string->space = BUFFER_SIZE;
-	string->up = 1;
+	//string->up = 1;
 	return (string);
 }
 
