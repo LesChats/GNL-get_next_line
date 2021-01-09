@@ -3,43 +3,35 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gcc <marvin@42.fr>                         +#+  +:+       +#+        */
+/*   By: abaudot <abaudot@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/21 11:32:17 by gcc               #+#    #+#             */
-/*   Updated: 2020/12/08 04:56:20 by gcc              ###   ########.fr       */
+/*   Created: 2021/01/08 16:37:13 by abaudot           #+#    #+#             */
+/*   Updated: 2021/01/08 16:37:29 by abaudot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static long int	get_nl(char *s)
+static long int	get_nl(const char *s, size_t n)
 {
-	t_op		word;
-	t_op		*sss;
-	char * const	save = s;
-	int		i;
+	t_op				long_word;
+	const char * const	s_save = s;
 
-	while ((t_op)s & 0b111)
-		if (*s++ == '\n')
-			return ((s - 1) - save);
-		else if (*(s - 1) == '\0')
-			return (-1);
-	sss = (t_op *)s;
-	while (1)
+	while (n >= 16)
 	{
-		word = *sss++;
-		if (((word - LOMAGIC) & (~word) & HIMAGIC) ||
-		(((word ^ NL) - LOMAGIC) & ~(word ^ NL) & HIMAGIC))
-		{	
-			s = (char *)(sss - 1);
-			i = -1;
-			while (++i < 8)
-				if (s[i] == '\n')
-					return ((s + i) - save);
-				else if (!s[i])
-					return (-1);
-		}
+		long_word = *(t_op *)s ^ NL;
+		if ((long_word - LOMAGIC) & ~long_word & HIMAGIC))
+			break ;
+		n -= 8;
+		s += 8;
 	}
+	while (n--)
+	{
+		if (*s == '\n')
+			return ((long int)(s - s_save));
+		++s;
+	}
+	return (-1);
 }
 
 static int	update_string(t_string *str, char *src, size_t n)
@@ -48,7 +40,6 @@ static int	update_string(t_string *str, char *src, size_t n)
 
 	if (n > str->space)
 	{
-		//str->space = BUFFER_SIZE << str->up++;
 		str->space <<= 1;
 		tmp = str->s;
 		if (!(str->s = (char *)malloc(str->space + 1))) 
@@ -113,6 +104,7 @@ static t_string	*initilize_string(char **line)
 int		get_next_line(int fd, char **line)
 {
 	static char	sheets[FOPEN_MAX][BUFFER_SIZE + 1];
+	size_t		sheet_len;
 	long int	a_nl;
 	t_string	*my_line;
 
@@ -122,15 +114,16 @@ int		get_next_line(int fd, char **line)
 		return (ERROR);
 	if (sheets[fd][0] == 0)
 		return (read_line(fd, my_line, sheets[fd]));
-	if ((a_nl = get_nl(sheets[fd])) != -1)
+	sheet_len = ft_strlen(sheets[fd]);
+	if ((a_nl = get_nl(sheets[fd], sheet_len)) != -1)
 	{
 		if (!(update_string(my_line, sheets[fd], a_nl)))
 			return (free_return(my_line, ERROR));
- 		ft_strcpy(sheets[fd], sheets[fd] + a_nl + 1);
+ 		ft_memcpy(sheets[fd], sheets[fd] + a_nl + 1, sheet_len);
 		return (free_return(my_line, SUCESS));
 	}
 	if (!(update_string(my_line, sheets[fd], ft_strlen(sheets[fd]))))
 		return (free_return(my_line, ERROR));
 	sheets[fd][0] = 0;
-	return (read_line(fd, my_line, sheets[fd]));
+		return (read_line(fd, my_line, sheets[fd]));
 }

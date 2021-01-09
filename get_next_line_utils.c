@@ -1,4 +1,4 @@
-/* ************************************************************************** */
+* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
@@ -48,69 +48,19 @@
 **
 */
 
-size_t	ft_strlen(const char *s)
+size_t ft_strlen(const char * str)
 {
-	size_t		len;
-	t_op		x;
+	const char * const s_star = str;
 
-	len  = 0;
-	while (4)
-	{
-		x = *(t_op *)s;
-		if (!(x & 0xFF))
-			return (len);
-		if (!(x & 0xFF00))
-			return (len + 1);
-		if (!(x & 0xFF0000))
-			return (len + 2);
-		if (!(x & 0xFF000000))
-			return (len + 3);
-		if (!(x & 0xFF00000000))
-			return (len + 4);
-		if (!(x & 0xFF0000000000))
-			return (len + 5);
-		if (!(x & 0xFF000000000000))
-			return (len + 6);
-		if (!(x & 0xFF00000000000000))
-			return (len + 7);
-		len += 8;
-		s += 8;
-	}
-	return (len);
+	while (*str)
+		++str;
+	return ((size_t)(str - s_star));
 }
 
 int	free_return(t_string *str, int ans)
 {
 	free(str);
 	return (ans);
-}
-
-void	ft_strcpy(char *dst, const char *src)
-{
-	t_op	word;
-	t_op	*s_p;
-	t_op	*d_p;
-	int	i;
-
-	while ((t_op)src & 0b111)
-		if (!(*dst++ = *src++))
-			return ;
-	d_p = (t_op *)dst;
-	s_p = (t_op *)src;
-	while (1)
-	{
-		word = *s_p;
-		if (((word - LOMAGIC) & ~word & HIMAGIC))
-		{
-			i = -1;
-			dst = (char *)d_p;
-			src = (char *)s_p;
-			while (++i < 8)
-				if (!(dst[i] = src[i]))
-					return ;
-		}
-		*d_p++ = *s_p++;
-	}
 }
 
 static void	wordcpy(t_op dstp, t_op srcp, size_t n)
