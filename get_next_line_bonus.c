@@ -6,7 +6,7 @@
 /*   By: abaudot <abaudot@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/10 17:50:50 by abaudot           #+#    #+#             */
-/*   Updated: 2021/01/10 18:19:20 by abaudot          ###   ########.fr       */
+/*   Updated: 2021/01/10 20:39:38 by abaudot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ static int		update_string(t_string *str, char *src, int n)
 		*(str->addr) = str->s;
 	}
 	ft_memcpy(str->s + str->len, src, n);
-	str->len = wanted
+	str->len = wanted;
 	str->s[str->len] = 0;
 	return (1);
 }
@@ -115,7 +115,7 @@ int				get_next_line(int fd, char **line)
 	{
 		if (!(update_string(&my_line, sheets[fd], a_nl)))
 			return (ERROR);
-		ft_memcpy(sheets[fd], sheets[fd] + a_nl + 1, sheet_len);
+		ft_memcpy(sheets[fd], sheets[fd] + a_nl + 1, sheet_len - a_nl);
 		return (SUCESS);
 	}
 	if (!(update_string(&my_line, sheets[fd], ft_strlen(sheets[fd]))))

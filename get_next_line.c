@@ -6,7 +6,7 @@
 /*   By: abaudot <abaudot@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/08 16:37:13 by abaudot           #+#    #+#             */
-/*   Updated: 2021/01/10 18:19:00 by abaudot          ###   ########.fr       */
+/*   Updated: 2021/01/10 20:36:09 by abaudot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,7 @@ int				get_next_line(int fd, char **line)
 	{
 		if (!(update_string(&my_line, sheets, a_nl)))
 			return (ERROR);
-		ft_memcpy(sheets, sheets + a_nl + 1, sheet_len);
+		ft_memcpy(sheets, sheets + a_nl + 1, sheet_len - a_nl);
 		return (SUCESS);
 	}
 	if (!(update_string(&my_line, sheets, sheet_len)))
