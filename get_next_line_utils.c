@@ -3,54 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gcc <marvin@42.fr>                         +#+  +:+       +#+        */
+/*   By: abaudot <abaudot@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/22 09:07:18 by gcc               #+#    #+#             */
-/*   Updated: 2021/01/10 16:07:39 by abaudot          ###   ########.fr       */
+/*   Created: 2021/01/10 17:46:04 by abaudot           #+#    #+#             */
+/*   Updated: 2021/01/10 18:01:51 by abaudot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-#include <stdio.h>
-
-/*
-** It seem's that my 'optimized strlen can lead, in some ciconstance, to
-**	heap overflow... saddly, and for security reason I have to abandon it
-**	and reaplace it by the must simple and ugly strlen... wait for it....
-**size_t	ft_strlen(char *s)
-**{
-**	t_op	word;
-**	t_op	*s_ptr;
-**	int	i;
-**	char * const cpy = s;
-**
-**	if (!s || !*s)
-**		return (0);
-**	while ((t_op)s & 0b111)
-**		if (*s++ == 0)
-**			return ((s - 1) - cpy);
-**	s_ptr = (t_op *)s;
-**	while (1)
-**	{
-**		word = *s_ptr;
-**		if (((word - LOMAGIC) & ~word & HIMAGIC))
-**		{
-**			i = -1;
-**			s = (char *)s_ptr;
-**			while (++i < 8)
-**				if (!s[i])
-**					return ((s - cpy) + i);
-**		}
-**		++s_ptr;
-**	}
-**}
-**
-*/
-
-size_t ft_strlen(const char * str)
+size_t		ft_strlen(const char *str)
 {
-	const char * const s_star = str;
+	const char *const s_star = str;
 
 	while (*str)
 		++str;
@@ -83,7 +47,7 @@ static void	wordcpy(t_op dstp, t_op srcp, size_t n)
 	}
 }
 
-void	ft_memcpy(char *dst, const char *src, size_t n)
+void		ft_memcpy(char *dst, const char *src, size_t n)
 {
 	t_op	dstp;
 	t_op	srcp;
@@ -98,7 +62,7 @@ void	ft_memcpy(char *dst, const char *src, size_t n)
 		srcp += n & -OPSIZ;
 		dstp += n & -OPSIZ;
 		n %= OPSIZ;
-	}		
+	}
 	dstd = (t_byte *)dstp;
 	srcd = (t_byte *)srcp;
 	while (n--)

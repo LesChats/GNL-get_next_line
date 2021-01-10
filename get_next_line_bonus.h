@@ -1,23 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.h                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abaudot <abaudot@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/01/10 17:39:31 by abaudot           #+#    #+#             */
-/*   Updated: 2021/01/10 17:47:05 by abaudot          ###   ########.fr       */
+/*   Created: 2021/01/10 17:39:58 by abaudot           #+#    #+#             */
+/*   Updated: 2021/01/10 17:47:52 by abaudot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#ifndef GET_NEXT_LINE_BONUS_H
+# define GET_NEXT_LINE_BONUS_H
 
 # include <stdlib.h>
 # include <unistd.h>
 
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE	42
+# endif
+
+# ifndef OPEN_MAX
+#  define OPEN_MAX		256
 # endif
 
 /*

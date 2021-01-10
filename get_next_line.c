@@ -6,16 +6,16 @@
 /*   By: abaudot <abaudot@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/08 16:37:13 by abaudot           #+#    #+#             */
-/*   Updated: 2021/01/10 16:40:15 by abaudot          ###   ########.fr       */
+/*   Updated: 2021/01/10 18:19:00 by abaudot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static long int	get_nl(const char *s, size_t n)
+static int		get_nl(const char *s, size_t n)
 {
 	t_op				long_word;
-	const char * const	s_save = s;
+	const char *const	s_save = s;
 
 	while (n >= 16)
 	{
@@ -28,39 +28,39 @@ static long int	get_nl(const char *s, size_t n)
 	while (n--)
 	{
 		if (*s == '\n')
-			return ((long int)(s - s_save));
+			return ((int)(s - s_save));
 		++s;
 	}
 	return (-1);
 }
 
-static int	update_string(t_string *str, char *src, size_t n)
+static int		update_string(t_string *str, char *src, int n)
 {
-	char *tmp;
-	const size_t  wanted = n + str->len;
-	
+	char		*tmp;
+	const int	wanted = n + str->len;
+
 	if (str->size < wanted)
 	{
-		while (str->size < wanted )
+		while (str->size < wanted)
 			str->size <<= 1;
 		tmp = str->s;
-		if (!(str->s = (char *)malloc(str->size + 1))) 
+		if (!(str->s = (char *)malloc(str->size + 1)))
 			return (0);
 		ft_memcpy(str->s, tmp, str->len);
 		free(tmp);
 		*(str->addr) = str->s;
 	}
 	ft_memcpy(str->s + str->len, src, n);
-	str->len += n;
+	str->len = wanted;
 	str->s[str->len] = 0;
 	return (1);
 }
 
-static int	read_line(int fd, t_string *str, char *sheet)
+static int		read_line(int fd, t_string *str, char *sheet)
 {
 	ssize_t		av_read;
 	long int	a_nl;
-	
+
 	while ((av_read = read(fd, sheet, BUFFER_SIZE)) > 0)
 	{
 		sheet[av_read] = 0;
@@ -72,22 +72,22 @@ static int	read_line(int fd, t_string *str, char *sheet)
 			ft_memcpy(sheet, sheet + a_nl + 1, av_read - a_nl);
 			return (SUCESS);
 		}
-		if (!(update_string(str, sheet, av_read))) 
+		if (!(update_string(str, sheet, av_read)))
 			return (ERROR);
 	}
 	*sheet = 0;
 	if (av_read == -1)
 	{
 		free(str->s);
-		*(str->addr) = NULL;	
+		*(str->addr) = NULL;
 		return (ERROR);
 	}
 	return (ENDFI);
 }
 
-static int	initilize_string(t_string *string, char **line)
+static int		initilize_string(t_string *string, char **line)
 {
-	if (!(*line = (char *)malloc(2)))
+	if (!(*line = (char *)malloc(3)))
 		return (0);
 	**line = 0;
 	string->addr = line;
@@ -97,29 +97,29 @@ static int	initilize_string(t_string *string, char **line)
 	return (1);
 }
 
-int		get_next_line(int fd, char **line)
+int				get_next_line(int fd, char **line)
 {
-	static char	sheets[FOPEN_MAX][BUFFER_SIZE + 1];
+	static char	sheets[BUFFER_SIZE + 1];
 	t_string	my_line;
 	size_t		sheet_len;
-	long int	a_nl;
+	int			a_nl;
 
-	if (fd < 0 || fd > FOPEN_MAX || !line || BUFFER_SIZE < 1)
+	if (fd < 0 || !line || BUFFER_SIZE < 1)
 		return (ERROR);
 	if (!(initilize_string(&my_line, line)))
 		return (ERROR);
-	if (sheets[fd][0] == 0)
-		return (read_line(fd, &my_line, sheets[fd]));
-	sheet_len = ft_strlen(sheets[fd]);
-	if ((a_nl = get_nl(sheets[fd], sheet_len)) != -1)
+	if (sheets[0] == 0)
+		return (read_line(fd, &my_line, sheets));
+	sheet_len = ft_strlen(sheets);
+	if ((a_nl = get_nl(sheets, sheet_len)) != -1)
 	{
-		if (!(update_string(&my_line, sheets[fd], a_nl)))
+		if (!(update_string(&my_line, sheets, a_nl)))
 			return (ERROR);
- 		ft_memcpy(sheets[fd], sheets[fd] + a_nl + 1, sheet_len);
+		ft_memcpy(sheets, sheets + a_nl + 1, sheet_len);
 		return (SUCESS);
 	}
-	if (!(update_string(&my_line, sheets[fd], ft_strlen(sheets[fd]))))
+	if (!(update_string(&my_line, sheets, sheet_len)))
 		return (ERROR);
-	sheets[fd][0] = 0;
-		return (read_line(fd, &my_line, sheets[fd]));
+	sheets[0] = 0;
+	return (read_line(fd, &my_line, sheets));
 }
