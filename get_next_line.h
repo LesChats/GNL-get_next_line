@@ -6,7 +6,7 @@
 /*   By: gcc <marvin@42.fr>                         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/22 08:41:44 by gcc               #+#    #+#             */
-/*   Updated: 2020/12/07 03:03:04 by gcc              ###   ########.fr       */
+/*   Updated: 2021/01/10 16:15:00 by abaudot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,18 @@
 #  define BUFFER_SIZE	42
 # endif
 
+# ifndef FOPEN_MAX
+#  define FOPEN_MAX		200
+# endif
+
 /*
 **	magic numbers
 */
 
 # define HIMAGIC	0x8080808080808080L
 # define LOMAGIC	0x0101010101010101L
-# define NL		0xa0a0a0a0a0a0a0aL
+# define NL			0xa0a0a0a0a0a0a0aL
+# define OPSIZ		8
 
 /*
 **	return messages
@@ -41,18 +46,16 @@
 **	type & structurs
 */
 
-typedef struct			s_string
+typedef struct	s_string
 {
-	char	**line;
+	char	**addr;
 	char	*s;
-	size_t	len;
-	size_t	space;
-	//size_t	up;
+	size_t		len;
+	size_t		size;
 }				t_string;
 
 typedef unsigned long int	t_op;
 typedef unsigned char		t_byte;
-# define OPSIZ	sizeof(t_op)
 
 /*
 **	get_next_line.c
@@ -64,10 +67,7 @@ int				get_next_line(int fd, char **line);
 **	get_next_line_utils.c
 */
 
-size_t	ft_strlen(const char *s);
-int	free_return(t_string *str, int ans);
-void	ft_strcpy(char *dst, const char *src);
-void	ft_memcpy(char *dst, const char *src, size_t n);
+size_t			ft_strlen(const char *s);
+void			ft_memcpy(char *dst, const char *src, size_t n);
 
 #endif
-

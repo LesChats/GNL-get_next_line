@@ -6,7 +6,7 @@
 /*   By: gcc <marvin@42.fr>                         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/22 09:07:18 by gcc               #+#    #+#             */
-/*   Updated: 2021/01/10 16:07:39 by abaudot          ###   ########.fr       */
+/*   Updated: 2021/01/09 17:42:47 by abaudot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,12 @@ size_t ft_strlen(const char * str)
 	while (*str)
 		++str;
 	return ((size_t)(str - s_star));
+}
+
+int	free_return(t_string *str, int ans)
+{
+	free(str);
+	return (ans);
 }
 
 static void	wordcpy(t_op dstp, t_op srcp, size_t n)

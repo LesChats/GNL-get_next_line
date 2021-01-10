@@ -6,7 +6,7 @@
 /*   By: abaudot <abaudot@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/08 16:37:13 by abaudot           #+#    #+#             */
-/*   Updated: 2021/01/10 16:40:15 by abaudot          ###   ########.fr       */
+/*   Updated: 2021/01/10 16:40:30 by abaudot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ static int	read_line(int fd, t_string *str, char *sheet)
 	if (av_read == -1)
 	{
 		free(str->s);
-		*(str->addr) = NULL;	
+		*(str->addr) = NULL;
 		return (ERROR);
 	}
 	return (ENDFI);
