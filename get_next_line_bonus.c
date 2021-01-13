@@ -66,7 +66,6 @@ static int		read_line(int fd, t_string *str, char *sheet)
 		sheet[av_read] = 0;
 		if ((a_nl = get_nl(sheet, av_read)) != -1)
 		{
-			sheet[a_nl] = 0;
 			if (!(update_string(str, sheet, a_nl)))
 				return (ERROR);
 			ft_memcpy(sheet, sheet + a_nl + 1, av_read - a_nl);
@@ -120,6 +119,5 @@ int				get_next_line(int fd, char **line)
 	}
 	if (!(update_string(&my_line, sheets[fd], ft_strlen(sheets[fd]))))
 		return (ERROR);
-	sheets[fd][0] = 0;
 	return (read_line(fd, &my_line, sheets[fd]));
 }
