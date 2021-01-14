@@ -6,7 +6,7 @@
 /*   By: abaudot <abaudot@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/10 17:50:11 by abaudot           #+#    #+#             */
-/*   Updated: 2021/01/10 18:02:12 by abaudot          ###   ########.fr       */
+/*   Updated: 2021/01/14 22:07:40 by abaudot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void		ft_memcpy(char *dst, const char *src, size_t n)
 	srcp = (t_op)src;
 	if (n >= 16)
 	{
-		wordcpy(dstp, srcp, n / OPSIZ);
+		wordcpy(dstp, srcp, n >> 3);
 		srcp += n & -OPSIZ;
 		dstp += n & -OPSIZ;
 		n %= OPSIZ;

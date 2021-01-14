@@ -6,7 +6,7 @@
 /*   By: abaudot <abaudot@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/10 17:50:50 by abaudot           #+#    #+#             */
-/*   Updated: 2021/01/10 20:39:38 by abaudot          ###   ########.fr       */
+/*   Updated: 2021/01/14 22:13:28 by abaudot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,10 @@ static int		update_string(t_string *str, char *src, int n)
 			str->size <<= 1;
 		tmp = str->s;
 		if (!(str->s = (char *)malloc(str->size + 1)))
+		{
+			free(tmp);
 			return (0);
+		}
 		ft_memcpy(str->s, tmp, str->len);
 		free(tmp);
 		*(str->addr) = str->s;
